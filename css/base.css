@@ -30,3 +30,8 @@ header{
     font-size: 3em;
     text-align: center;
 }
+
+footer{
+    position: absolute;
+    bottom: 0;
+}
