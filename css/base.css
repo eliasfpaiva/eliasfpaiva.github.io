@@ -73,14 +73,16 @@ p{
     margin-right: 10%;
 }
 
-/* .assinatura{
-    float: left;
-    height: 48px;
-    width: auto;
-    vertical-align: center;
-} */
-
-.links{
+.aDireita{
     float: right;
     width: auto;
+}
+
+.aEsquerda{
+    float: left;
+    width: auto;
+}
+
+.marginTop3porCento{
+    margin-top: 3%;
 }
