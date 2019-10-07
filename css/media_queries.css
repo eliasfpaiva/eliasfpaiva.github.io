@@ -1,0 +1,11 @@
+@media (orientation: landscape){
+    body{
+        padding-bottom: 10%;
+    }
+}
+
+@media (orientation: portrait){
+    body{
+        padding-bottom: 30%;
+    }
+}
