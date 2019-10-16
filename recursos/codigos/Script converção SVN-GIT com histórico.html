@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Script converção SVN-GIT com histórico</title>
+	<style>
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+			background-color: #333333;
+			color: #cccccc;
+		}
+
+		span,
+		code {
+			display: block;
+			padding: 0.1em 0 0.1em 0;
+		}
+
+		code {
+			font-family: 'Droid Sans Mono', 'monospace', 'Droid Sans Fallback';
+			font-size: 0.8em;
+		}
+
+		li {
+			padding: 0.5em 0 0.5em 0;
+		}
+
+		.importante {
+			color: #ffffff;
+		}
+
+		.primeiroSpan {
+			display: inline;
+		}
+	</style>
+</head>
+<body>
+	<h1>Script converção SVN-GIT com histórico</h1>
+	<span class="importante">OBSERVAÇÃO 1: Este tutorial foi formulado para ser executado pelo terminal do LINUX</span>
+	<span class="importante">OBSERVAÇÃO 2: Para todos os comandos a serem executados há a possibilidade de faltar algum
+		programa na sua máquina, basta instalá-lo e executar novamente</span>
+	<ol id="passos">
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Dentro da pasta raíz, do repositório SVN execute este
+				comando no terminal</span>
+			<code>svn log -q | awk -F '|' '/^r/ {sub("^ ", "", $2); sub(" $", "", $2); print $2" = "$2" <"$2">"}' | sort -u > autores.txt</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Abra o arquivo autores.txt em um editor de texto e
+				coloque os domínios dos e-mails dos autores</span>
+			<span class="importante">OBSERVAÇÃO 3: Se não souber o domínio do e-mail, pode deixar da forma que foi
+				gerado</span>
+			<span>&emsp;ex.:</span>
+			<span>&emsp;&emsp;jose.couves = jose.couves &lt;jose.couves&gt;</span>
+			<span>&emsp;&emsp;&emsp;vira</span>
+			<span>&emsp;&emsp;jose.couves = jose.couves &lt;jose.couves@horta.com.br&gt;</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Inclua estes dois autores, se não existirem</span>
+			<span>&emsp;(no author) = (no author) &lt;(no author)&gt;</span>
+			<span>&emsp;(sem autor) = (sem autor) &lt;(sem autor)&gt;</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Dentro da pasta raíz, do repositório SVN execute este
+				comando no terminal, ele vai deve vai passar por toda a lista de commits e gerar uma pasta dentro da
+				pasta raíz com o nome 'ProjetoGIT' que será o seu repositório GIT.</span>
+			<code>git svn clone . \ProjetoGIT -A autores.txt --no-metadata -T http://&lt;servidor&gt;/trunk --branches http://&lt;servidor&gt;/branches --tags http://&lt;servidor&gt;/tags -s</code>
+			<span class="importante">OBSERVAÇÃO 4: durante a execução ele dará erro toda vez que não encontrar o
+				mapeamento de algum autor, para resolver basta:</span>
+			<ol>
+				<li>
+					<span>Verificar o nome ausente pelo log de execução e acrescentar no arquivo de autores</span>
+					<span>&emsp;A linha com a informação tem este formato</span>
+					<code>&emsp;'Author: jose.couves not defined in autores.txt file'</code>
+				</li>
+				<li>Apagar a pasta 'ProjetoGIT' da pasta raíz</li>
+			</ol>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Acesse a pasta 'ProjetoGIT' no Terminal</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>cp -rf .git/refs/remotes/origin/tags/* .git/refs/tags/</code>
+			<span class="importante">OBSERVAÇÃO 5.: não importa se aparecer mensagem do tipo 'cp: não foi possível...',
+				e o mesmo vale para os passo 6, 7 e 8</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>rm -rf .git/refs/remotes/origin/tags</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>cp -rf .git/refs/remotes/origin/* .git/refs/heads/</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>rm -rf .git/refs/remotes/origin</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>rm -rf .git/refs/remotes</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>rm .git/refs/heads/trunk</code>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Crie o repositório GIT remoto em branco(sem init) no
+				servidor de versionamento e copie a URL de clonagem</span>
+			<span>&emsp;ex.: https://github.com/josecouves/projeto.git</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>git remote add origin &lt;URL do repositório remoto&gt;</code>
+			<span>&emsp;ex.: git remote add origin https://github.com/josecouves/projeto.git</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>git push origin --all</code>
+			<span class="importante">OBSERVAÇÃO 6: Neste momento, é possível que seja solicitado seu login e senha para
+				acesso ao servidor GIT remoto, basta informá-los</span>
+		</li>
+		<li>
+			<input type="checkbox"><span class="primeiroSpan"> Execute este comando</span>
+			<code>git push -u origin --tags</code>
+		</li>
+	</ol>
+</body>
+
+</html>
