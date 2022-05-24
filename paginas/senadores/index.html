@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Senadores</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src='./../../recursos/arquivos/ensino_domiciliar/parla_inter_csv.js'></script>
+    <script src='./scripts.js'></script>
+    <script>
+        const comparadora = (e1, e2) => { return e1 > e2 ? 1 : (e2 > e1 ? -1 : 0); }
+
+        const carregarEstados = () => {
+            let estados = [...(new Set(dados.senadores.map(x => x.UF)))]
+                .sort((e1, e2) => comparadora(e1, e2));
+            estados.forEach(e => {
+                let opcao = document.createElement('option');
+                opcao.textContent = e;
+                opcao.value = e;
+                document.getElementById('selectEstado').appendChild(opcao);
+            });
+        }
+
+        const atualizarListaSenadores = () => {
+            [...document.getElementById('dadosSenadores').children].forEach(s => s.remove());
+            let estado = document.getElementById('selectEstado').value;
+            let jsonSenadores = dados.senadores.filter(s => (estado === "<null>" || s.UF === estado));
+            jsonSenadores.forEach(js => {
+                let senador = Senador.jsonObject(js);
+                document.getElementById('dadosSenadores').appendChild(senador.toRowTable());
+            });
+        }
+
+        const atuarlizarTela = () =>{
+            carregarEstados();
+            atualizarListaSenadores()
+        }
+        
+        window.onload = atuarlizarTela;
+    </script>
+</head>
+<body>
+    <table>
+        <caption style="display:none">Tabela de senadores</caption>
+        <thead>
+            <tr><td colspan="9"><h1 style="text-align:center">Dados Senadores</h1></td></tr>
+            <tr><td colspan="9" style="text-align: center;padding-bottom: 15px;">
+            <select name="selectEstado" id="selectEstado" style="font-size: large;" onchange="atualizarListaSenadores()">
+                <option value="<null>">Escolha um estado:</option>
+            </select>
+            </td></tr>
+            <tr>
+                <th scope="col">NOME</th>
+                <th scope="col">PARTIDO</th>
+                <th scope="col">UF</th>
+                <th scope="col">TITULARIDADE</th>
+                <th scope="col">MANDATO</th>
+                <th scope="col">TELEFONES</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col">CHEFE GABINETE</th>
+                <th scope="col">ENDERECO</th>
+            </tr>
+        </thead>
+        <tbody id="dadosSenadores">
+        </tbody>
+    </table>
+</body>
+</html>
