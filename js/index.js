@@ -11,4 +11,4 @@ const atualizarPagina = () => {
     atualizarLinkMapsCasaOracaoLourdes();
 }
 
-document.addEventListener('DOMContentLoaded', () => atualizarPagina());
+//document.addEventListener('DOMContentLoaded', () => atualizarPagina());
